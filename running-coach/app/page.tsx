@@ -1,3 +1,5 @@
+'use client'
+
 import type React from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -6,8 +8,11 @@ import { StarsBackground } from "@/components/ui/stars-background"
 import { RunningIcon } from "@/components/ui/running-icon"
 import { TechButton } from "@/components/ui/tech-button"
 import { TechCard } from "@/components/ui/tech-card"
+import { useAuth } from "@/lib/auth-context"
 
 export default function HomePage() {
+  const { user, signOut } = useAuth()
+
   return (
     <StarsBackground>
       <div className="flex min-h-screen flex-col text-white">
@@ -18,41 +23,57 @@ export default function HomePage() {
                 <RunningIcon size={28} />
                 <span className="hidden font-bold sm:inline-block">Bhaag</span>
               </Link>
-              <nav className="flex items-center space-x-6 text-sm font-medium">
-                <Link href="/dashboard" className="transition-colors hover:text-[#00d264]">
-                  Dashboard
-                </Link>
-                <Link href="/training" className="transition-colors hover:text-[#00d264]">
-                  Training
-                </Link>
-                <Link href="/strength" className="transition-colors hover:text-[#00d264]">
-                  Strength
-                </Link>
-                <Link href="/community" className="transition-colors hover:text-[#00d264]">
-                  Community
-                </Link>
-              </nav>
+              {user && (
+                <nav className="flex items-center space-x-6 text-sm font-medium">
+                  <Link href="/dashboard" className="transition-colors hover:text-[#00d264]">
+                    Dashboard
+                  </Link>
+                  <Link href="/training" className="transition-colors hover:text-[#00d264]">
+                    Training
+                  </Link>
+                  <Link href="/strength" className="transition-colors hover:text-[#00d264]">
+                    Strength
+                  </Link>
+                  <Link href="/community" className="transition-colors hover:text-[#00d264]">
+                    Community
+                  </Link>
+                </nav>
+              )}
             </div>
             <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-              <div className="w-full flex-1 md:w-auto md:flex-none">
-                <TechButton
-                  className="flex items-center gap-2 bg-[#FC4C02] text-white hover:bg-[#E34902] border-none"
-                  glowColor="rgba(252, 76, 2, 0.5)"
-                >
-                  <img src="/placeholder.svg?height=20&width=20" alt="STRAVA logo" className="h-5 w-5" />
-                  <span className="font-medium">Connect with STRAVA</span>
-                </TechButton>
-              </div>
-              <nav className="flex items-center">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="mr-2 rounded-full border border-white/10 bg-black/30 backdrop-blur-md"
-                  aria-label="User profile"
-                >
-                  <img src="/placeholder.svg?height=32&width=32" alt="User avatar" className="h-8 w-8 rounded-full" />
-                </Button>
-              </nav>
+              {user ? (
+                <>
+                  <div className="w-full flex-1 md:w-auto md:flex-none">
+                    <TechButton
+                      className="flex items-center gap-2 bg-[#FC4C02] text-white hover:bg-[#E34902] border-none"
+                      glowColor="rgba(252, 76, 2, 0.5)"
+                    >
+                      <img src="/placeholder.svg?height=20&width=20" alt="STRAVA logo" className="h-5 w-5" />
+                      <span className="font-medium">Connect with STRAVA</span>
+                    </TechButton>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    onClick={() => signOut()}
+                    className="text-white hover:text-[#00d264]"
+                  >
+                    Sign out
+                  </Button>
+                </>
+              ) : (
+                <div className="flex items-center space-x-4">
+                  <Link href="/signin">
+                    <Button variant="ghost" className="text-white hover:text-[#00d264]">
+                      Sign in
+                    </Button>
+                  </Link>
+                  <Link href="/signup">
+                    <Button className="bg-[#00d264] text-white hover:bg-[#00b858]">
+                      Get Started
+                    </Button>
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </header>
